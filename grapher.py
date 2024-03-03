@@ -1,3 +1,6 @@
+#Instructions: In windows terminal type:
+# > python grapher.py --board-id 0
+
 import argparse
 import logging
 from flask import Flask, render_template_string

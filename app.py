@@ -1,3 +1,7 @@
+#Instructions: in the windows terminal go to this directory and type:
+# > set FLASK_APP = app.py
+# > flask run
+
 from flask import Flask, render_template_string
 import grapher
 
