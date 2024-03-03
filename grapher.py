@@ -1,11 +1,17 @@
 import argparse
 import logging
+from flask import Flask, render_template_string
+import grapher
+
 
 import pyqtgraph as pg
 from brainflow.board_shim import BoardShim, BrainFlowInputParams, BoardIds
 from brainflow.data_filter import DataFilter, FilterTypes, DetrendOperations
 from pyqtgraph.Qt import QtGui, QtCore
+import app
 
+import numpy as np
+real_array = np.empty((0,))
 
 class Graph:
     def __init__(self, board_shim):
@@ -43,7 +49,9 @@ class Graph:
             self.curves.append(curve)
 
     def update(self):
+        global real_array
         data = self.board_shim.get_current_board_data(self.num_points)
+        real_array = data
         for count, channel in enumerate(self.exg_channels):
             # plot timeseries
             DataFilter.detrend(data[channel], DetrendOperations.CONSTANT.value)
@@ -54,7 +62,7 @@ class Graph:
             DataFilter.perform_bandstop(data[channel], self.sampling_rate, 58.0, 62.0, 2,
                                         FilterTypes.BUTTERWORTH_ZERO_PHASE, 0)
             self.curves[count].setData(data[channel].tolist())
-
+        app.updateArray(data)
         self.app.processEvents()
 
 
@@ -110,3 +118,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+def getArray():
+    return real_array
+
